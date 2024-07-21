@@ -1,4 +1,12 @@
 #! /bin/bash
+#*********************************
+#
+# android_promo_screens
+# (C)Zoff in 2024
+#
+# https://github.com/zoff99/android_promo_screens
+#
+#*********************************
 
 width="1200"
 height="2000"
