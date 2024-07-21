@@ -26,8 +26,52 @@ jobs:
           ./test.sh "top text" "smaller longer text describing whats going on. and also have some good motivation here." testfiles/screen_shot_android_02.png
           mv -v output.png output_blue.png
 
-      - name: check output
+      - name: check blue image output
         run: |
-          ls -al output.png
-          ls -hal output.png
+          ls -al output_blue.png
+          ls -hal output_blue.png
+
+      - name: generate purple image
+        run: |
+          ./test.sh "top text" "smaller longer text describing whats going on. and also have some good motivation here." testfiles/screen_shot_android_02.png purple
+          mv -v output.png output_purple.png
+
+      - name: check purple output
+        run: |
+          ls -al output_purple.png
+          ls -hal output_purple.png
+
+      - name: generate orange image
+        run: |
+          ./test.sh "top text" "smaller longer text describing whats going on. and also have some good motivation here." testfiles/screen_shot_android_02.png orange
+          mv -v output.png output_orange.png
+
+      - name: check orange output
+        run: |
+          ls -al output_orange.png
+          ls -hal output_orange.png
+
+      - name: generate green image
+        run: |
+          ./test.sh "top text" "smaller longer text describing whats going on. and also have some good motivation here." testfiles/screen_shot_android_02.png green
+          mv -v output.png output_green.png
+
+      - name: check green output
+        run: |
+          ls -al output_green.png
+          ls -hal output_green.png
+
+
+      - name: Upload to nightly release
+        uses: ncipollo/release-action@v1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        with:
+          allowUpdates: true
+          tag: nightly
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          prerelease: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "output_*.png"
 
