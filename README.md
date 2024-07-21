@@ -1,3 +1,5 @@
+## Create nice promotion images from boring App screenshots
+
 ### Automatically generated promo images:
 
 <img src="https://github.com/zoff99/android_promo_screens/releases/download/nightly/output_blue.png" height="600"></a>
