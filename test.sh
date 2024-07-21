@@ -3,6 +3,30 @@
 width="1200"
 height="2000"
 
+text_label_top_01="$1"
+text_label_top_02="$2"
+screen_image_file="$3"
+
+if [ "$1""x" == "x" ]; then
+    echo "ERROR: no header text given"
+    exit 1
+fi
+
+if [ "$2""x" == "x" ]; then
+    echo "ERROR: no top text given"
+    exit 2
+fi
+
+if [ "$3""x" == "x" ]; then
+    echo "ERROR: no screen image given"
+    exit 3
+fi
+
+if [ ! -e "$screen_image_file" ]; then
+    echo "ERROR: screen image file does not exist"
+    exit 4
+fi
+
 outputfilename="output.png"
 
 text_label_top_01_textbox_width=$[ $width - 200 ]
@@ -16,17 +40,31 @@ bg_color_bottom="#fcfcfc"
 phoneframe_width=$[ $width - 300 ]
 phoneframe_height=$[ $height * 2 / 3 ]
 phoneframe_start_x=$[ $[ $width - $phoneframe_width ] / 2 ]
-phoneframe_start_y=$[ $[ $height / 3 ] + 60 ]
+phoneframe_start_y=$[ $[ $height / 3 ] + 30 ]
 phoneframe_end_x=$[ $phoneframe_start_x + $phoneframe_width ]
 phoneframe_end_y=$[ $phoneframe_start_y + $phoneframe_height + 500 ]
 bg_color_phoneframe="rgba( 0, 0, 0 , 1.0 )"
+rounded_phone_frame_x=70
+rounded_phone_frame_y=70
+r=65
+
+margin_screen_to_phone_x=40
+delta_scr_x=$[ $margin_screen_to_phone_x / 2 ]
+margin_screen_to_phone_y=50
+phonescreen_start_x=$[ $phoneframe_start_x + $delta_scr_x ]
+phonescreen_start_y=$[ $phoneframe_start_y + $margin_screen_to_phone_y ]
+phonescreen_end_x=$[ $phoneframe_end_x - $delta_scr_x ]
+phonescreen_end_y=$[ $phoneframe_start_y + $phoneframe_height + 500 ]
+
+phonescreen_needed_with=$[ $phonescreen_end_x - $phonescreen_start_x - 0 ]
+echo "phonescreen_needed_with:$phonescreen_needed_with"
+
 
 text_label_top_01_textbox_width=$[ $width - 200 ]
 
-text_label_top_01="You're in control."
-text_label_top_02="You decide who you see in your home feed. No surprises."
 
-#  -size ${width}x${height}
+rm -f tmp.png
+
 
 # create a rectangle image with some background
 convert -size ${width}x${height} xc:"$bg_color_top" "$outputfilename"
@@ -58,10 +96,29 @@ rm -f tmp.png
 
 # draw the black rounded rectangle that the phone frame
 convert "$outputfilename" -strokewidth 0 -fill "$bg_color_phoneframe" \
-   -draw "roundrectangle $phoneframe_start_x,$phoneframe_start_y $phoneframe_end_x,$phoneframe_end_y 60,60" \
+   -draw "roundrectangle $phoneframe_start_x,$phoneframe_start_y $phoneframe_end_x,$phoneframe_end_y $rounded_phone_frame_x,$rounded_phone_frame_y" \
    "$outputfilename"
 
+# DEBUG: draw a placeholer white rectangle to check bounds where screenshot should go
+# convert "$outputfilename" -strokewidth 0 -fill white \
+#   -draw "roundrectangle $phonescreen_start_x,$phonescreen_start_y $phonescreen_end_x,$phonescreen_end_y 60,60" \
+#   "$outputfilename"
 
-# montage -size ${width}x${height} "$outputfilename" -size 100x60 xc:skyblue -fill white -stroke black \
-# -draw "roundrectangle 20,10 80,50 20,15" "$outputfilename"
+# convert the wanted screenshot to the width required to fit in the box
+convert _docs/screen_shot_android_03.png -resize ${phonescreen_needed_with}x8000 screen.png
 
+
+convert "$screen_image_file" \
+     \( +clone  -alpha extract \
+        -draw 'fill black polygon 0,0 0,'"$r"' '"$r"',0 fill white circle '"$r"','"$r"' '"$r"',0' \
+        \( +clone -flip \) -compose Multiply -composite \
+        \( +clone -flop \) -compose Multiply -composite \
+     \) -alpha off -compose CopyOpacity -composite screen2.png
+
+
+ddd=$[ $phonescreen_start_x + 0 ]
+yyy=$[ $phonescreen_start_y + 0 ]
+
+composite -geometry +${ddd}+${yyy} screen2.png "$outputfilename" "$outputfilename"
+
+rm -f screen2.png
