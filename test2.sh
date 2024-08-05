@@ -63,16 +63,15 @@ text_label_top_02_textbox_height="300"
 
 bg_color_bottom="#fcfcfc"
 
-phoneframe_width=$[ $width - 460 ]
+phoneframe_width=$[ $width - 480 ]
 phoneframe_height=$[ $height * 2 / 3 ]
 phoneframe_start_x=$[ $[ $width - $phoneframe_width ] / 2 ]
-phoneframe_start_y=$[ 500 ]
+phoneframe_start_y=$[ 520 ]
 phoneframe_end_x=$[ $phoneframe_start_x + $phoneframe_width ]
-phoneframe_end_y=$[ $phoneframe_start_y + $phoneframe_height + 500 ]
 bg_color_phoneframe="rgba( 0, 0, 0 , 1.0 )"
 rounded_phone_frame_x=70
 rounded_phone_frame_y=70
-r=65
+r=45
 
 margin_screen_to_phone_x=40
 delta_scr_x=$[ $margin_screen_to_phone_x / 2 ]
@@ -80,7 +79,6 @@ margin_screen_to_phone_y=50
 phonescreen_start_x=$[ $phoneframe_start_x + $delta_scr_x ]
 phonescreen_start_y=$[ $phoneframe_start_y + $margin_screen_to_phone_y ]
 phonescreen_end_x=$[ $phoneframe_end_x - $delta_scr_x ]
-phonescreen_end_y=$[ $phoneframe_start_y + $phoneframe_height + 500 ]
 
 phonescreen_needed_with=$[ $phonescreen_end_x - $phonescreen_start_x - 0 ]
 echo "phonescreen_needed_with:$phonescreen_needed_with"
@@ -123,6 +121,18 @@ cp tmp.png "$outputfilename"
 
 rm -f tmp.png
 
+# convert the wanted screenshot to the width required to fit in the box
+rm -f screen.png
+convert "$screen_image_file" -resize ${phonescreen_needed_with}x8000 screen.png
+
+screen_new_w=$(identify -ping -format '%w' screen.png 2>/dev/null)
+screen_new_h=$(identify -ping -format '%h' screen.png 2>/dev/null)
+
+echo "new screenshot size= $screen_new_w x $screen_new_h"
+
+# now calculate the size of the phone frame, from the new screenshot height
+phoneframe_end_y=$[ $phoneframe_start_y + $screen_new_h + $margin_screen_to_phone_y + $margin_screen_to_phone_y ]
+
 # draw the black rounded rectangle of the phone frame
 convert "$outputfilename" -strokewidth 0 -fill "$bg_color_phoneframe" \
    -draw "roundrectangle $phoneframe_start_x,$phoneframe_start_y $phoneframe_end_x,$phoneframe_end_y $rounded_phone_frame_x,$rounded_phone_frame_y" \
@@ -132,16 +142,13 @@ convert "$outputfilename" -strokewidth 0 -fill "$bg_color_phoneframe" \
 ####################################################
 # DEBUG: draw a placeholer white rectangle to check bounds where screenshot should go
 ####################################################
+# phonescreen_end_y=$[ $phoneframe_start_y + $phoneframe_height + 500 ] ## --> TODO: calcualte this new!!
 ####################################################
 # convert "$outputfilename" -strokewidth 0 -fill white \
 #   -draw "roundrectangle $phonescreen_start_x,$phonescreen_start_y $phonescreen_end_x,$phonescreen_end_y 60,60" \
 #   "$outputfilename"
 ####################################################
 ####################################################
-
-# convert the wanted screenshot to the width required to fit in the box
-rm -f screen.png
-convert "$screen_image_file" -resize ${phonescreen_needed_with}x8000 screen.png
 
 # give the screenshot rounded corners
 rm -f screen2.png
