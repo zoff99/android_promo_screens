@@ -6,6 +6,8 @@
 <img src="https://github.com/zoff99/android_promo_screens/releases/download/nightly/output_purple.png" height="600"></a>
 <img src="https://github.com/zoff99/android_promo_screens/releases/download/nightly/output_orange.png" height="600"></a>
 <img src="https://github.com/zoff99/android_promo_screens/releases/download/nightly/output_green.png" height="600"></a>
+<img src="https://github.com/zoff99/android_promo_screens/releases/download/nightly/output_f1_green.png" height="600"></a>
+<img src="https://github.com/zoff99/android_promo_screens/releases/download/nightly/output_f2_green.png" height="600"></a>
 
 ### commands:
 
