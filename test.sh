@@ -63,7 +63,7 @@ text_label_top_02_textbox_height="300"
 
 bg_color_bottom="#fcfcfc"
 
-phoneframe_width=$[ $width - 300 ]
+phoneframe_width=$[ $width - 430 ]
 phoneframe_height=$[ $height * 2 / 3 ]
 phoneframe_start_x=$[ $[ $width - $phoneframe_width ] / 2 ]
 phoneframe_start_y=$[ $[ $height / 3 ] + 30 ]
