@@ -63,10 +63,10 @@ text_label_top_02_textbox_height="300"
 
 bg_color_bottom="#fcfcfc"
 
-phoneframe_width=$[ $width - 480 ]
+phoneframe_width=$[ $width - 550 ]
 phoneframe_height=$[ $height * 2 / 3 ]
 phoneframe_start_x=$[ $[ $width - $phoneframe_width ] / 2 ]
-phoneframe_start_y=$[ 520 ]
+phoneframe_start_y=$[ 500 ]
 phoneframe_end_x=$[ $phoneframe_start_x + $phoneframe_width ]
 bg_color_phoneframe="rgba( 0, 0, 0 , 1.0 )"
 rounded_phone_frame_x=70
